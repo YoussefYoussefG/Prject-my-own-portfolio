@@ -139,15 +139,8 @@ export async function POST(request: NextRequest) {
     }
 
     // --- Send Email Notification (with XSS-safe escaping) ---
-    // Factor III: sender/recipient read from environment config
-    const contactTo = process.env.CONTACT_TO_EMAIL;
-    const contactFrom = process.env.CONTACT_FROM_EMAIL;
-
-    if (!contactTo || !contactFrom) {
-      console.error('Missing CONTACT_TO_EMAIL or CONTACT_FROM_EMAIL env vars');
-      // Message saved to DB, so still count as success
-      return NextResponse.json({ success: true });
-    }
+    const contactTo = process.env.CONTACT_TO_EMAIL || 'yg.youssef.gamal16@gmail.com';
+    const contactFrom = process.env.CONTACT_FROM_EMAIL || 'Portfolio Contact <onboarding@resend.dev>';
 
     const safeName = escapeHtml(trimmedName);
     const safeEmail = escapeHtml(trimmedEmail);
