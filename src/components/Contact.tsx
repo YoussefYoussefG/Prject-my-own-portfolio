@@ -98,7 +98,7 @@ export default function Contact() {
                 <a href="#" className="p-2.5 bg-white rounded-full border border-foreground/10 hover:border-foreground/30 hover:-translate-y-0.5 transition-all text-foreground/70 hover:text-foreground">
                   <LinkedinIcon className="w-4 h-4" />
                 </a>
-                <a href="#" className="p-2.5 bg-white rounded-full border border-foreground/10 hover:border-foreground/30 hover:-translate-y-0.5 transition-all text-foreground/70 hover:text-foreground">
+                <a href="https://github.com/YoussefYoussefG" target="_blank" rel="noopener noreferrer" className="p-2.5 bg-white rounded-full border border-foreground/10 hover:border-foreground/30 hover:-translate-y-0.5 transition-all text-foreground/70 hover:text-foreground">
                   <GithubIcon className="w-4 h-4" />
                 </a>
                 <a href="#" className="p-2.5 bg-white rounded-full border border-foreground/10 hover:border-foreground/30 hover:-translate-y-0.5 transition-all text-foreground/70 hover:text-foreground">
