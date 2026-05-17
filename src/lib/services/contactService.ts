@@ -1,15 +1,7 @@
-import { supabase } from '../supabase';
-
 export interface ContactMessage {
   name: string;
   email: string;
   message: string;
-}
-
-// Simple email validation
-function isValidEmail(email: string): boolean {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
 }
 
 // Rate limiting: track last submission time per session
@@ -18,24 +10,9 @@ const RATE_LIMIT_MS = 30000; // 30 seconds between submissions
 
 export async function submitContactMessage(data: ContactMessage): Promise<{ success: boolean; error?: string }> {
   try {
-    // Validate required fields
+    // Basic client-side validation (server also validates)
     if (!data.name.trim() || !data.email.trim() || !data.message.trim()) {
       return { success: false, error: 'All fields are required.' };
-    }
-
-    // Validate name length
-    if (data.name.trim().length < 2) {
-      return { success: false, error: 'Please enter a valid name.' };
-    }
-
-    // Validate email format
-    if (!isValidEmail(data.email)) {
-      return { success: false, error: 'Please enter a valid email address.' };
-    }
-
-    // Validate message length
-    if (data.message.trim().length < 10) {
-      return { success: false, error: 'Message must be at least 10 characters.' };
     }
 
     // Rate limiting check
@@ -45,19 +22,21 @@ export async function submitContactMessage(data: ContactMessage): Promise<{ succ
       return { success: false, error: `Please wait ${remainingSeconds} seconds before sending another message.` };
     }
 
-    const { error } = await supabase
-      .from('messages')
-      .insert([
-        {
-          name: data.name.trim(),
-          email: data.email.trim().toLowerCase(),
-          message: data.message.trim(),
-        }
-      ]);
+    // Call the API route (handles DB save + email notification)
+    const response = await fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: data.name.trim(),
+        email: data.email.trim(),
+        message: data.message.trim(),
+      }),
+    });
 
-    if (error) {
-      console.error('Error submitting message:', error);
-      return { success: false, error: 'Failed to send message. Please try again later.' };
+    const result = await response.json();
+
+    if (!response.ok) {
+      return { success: false, error: result.error || 'Failed to send message.' };
     }
 
     // Update last submission time on success
