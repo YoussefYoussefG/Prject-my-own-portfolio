@@ -67,7 +67,7 @@ export default function Contact() {
         {/* Header */}
         <div className="mb-16">
           <FadeInUp>
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-foreground/10 bg-white mb-8">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-foreground/10 bg-card mb-8">
               <div className="w-2 h-2 rounded-full bg-accent"></div>
               <span className="text-xs font-semibold tracking-widest uppercase text-foreground/70">
                 Contact
@@ -95,13 +95,13 @@ export default function Contact() {
               </a>
               
               <div className="flex gap-2 sm:ml-4">
-                <a href="https://www.linkedin.com/in/youssef-gamal123" target="_blank" rel="noopener noreferrer" className="p-2.5 bg-white rounded-full border border-foreground/10 hover:border-foreground/30 hover:-translate-y-0.5 transition-all text-foreground/70 hover:text-foreground">
+                <a href="https://www.linkedin.com/in/youssef-gamal123" target="_blank" rel="noopener noreferrer" className="p-2.5 bg-card rounded-full border border-foreground/10 hover:border-foreground/30 hover:-translate-y-0.5 transition-all text-foreground/70 hover:text-foreground">
                   <LinkedinIcon className="w-4 h-4" />
                 </a>
-                <a href="https://github.com/YoussefYoussefG" target="_blank" rel="noopener noreferrer" className="p-2.5 bg-white rounded-full border border-foreground/10 hover:border-foreground/30 hover:-translate-y-0.5 transition-all text-foreground/70 hover:text-foreground">
+                <a href="https://github.com/YoussefYoussefG" target="_blank" rel="noopener noreferrer" className="p-2.5 bg-card rounded-full border border-foreground/10 hover:border-foreground/30 hover:-translate-y-0.5 transition-all text-foreground/70 hover:text-foreground">
                   <GithubIcon className="w-4 h-4" />
                 </a>
-                <a href="#" className="p-2.5 bg-white rounded-full border border-foreground/10 hover:border-foreground/30 hover:-translate-y-0.5 transition-all text-foreground/70 hover:text-foreground">
+                <a href="#" className="p-2.5 bg-card rounded-full border border-foreground/10 hover:border-foreground/30 hover:-translate-y-0.5 transition-all text-foreground/70 hover:text-foreground">
                   <InstagramIcon className="w-4 h-4" />
                 </a>
               </div>
@@ -111,9 +111,9 @@ export default function Contact() {
 
         {/* Form Card */}
         <FadeInUp delay={0.3}>
-          <div className="bg-white rounded-3xl p-8 md:p-12 shadow-sm border border-foreground/5 relative overflow-hidden">
+          <div className="bg-card rounded-3xl p-8 md:p-12 shadow-sm border border-foreground/5 relative overflow-hidden">
             {status === "success" && (
-              <div className="absolute inset-0 bg-white/95 z-10 flex flex-col items-center justify-center text-center p-8 backdrop-blur-sm">
+              <div className="absolute inset-0 bg-card/95 z-10 flex flex-col items-center justify-center text-center p-8 backdrop-blur-sm">
                 <CheckCircle className="w-12 h-12 text-green-500 mb-4" />
                 <h3 className="text-2xl font-serif mb-2">Message Sent</h3>
                 <p className="text-foreground/70">Thank you for reaching out. I&apos;ll get back to you shortly!</p>

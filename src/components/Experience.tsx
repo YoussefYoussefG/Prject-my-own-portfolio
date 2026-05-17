@@ -70,7 +70,7 @@ export default function Experience() {
         
         {/* Header Area */}
         <FadeInUp className="mb-20 text-center flex flex-col items-center">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-foreground/10 bg-white mb-8">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-foreground/10 bg-card mb-8">
             <div className="w-2 h-2 rounded-full bg-accent"></div>
             <span className="text-xs font-semibold tracking-widest uppercase text-foreground/70">
               Experience
