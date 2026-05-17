@@ -95,7 +95,7 @@ export default function Contact() {
               </a>
               
               <div className="flex gap-2 sm:ml-4">
-                <a href="#" className="p-2.5 bg-white rounded-full border border-foreground/10 hover:border-foreground/30 hover:-translate-y-0.5 transition-all text-foreground/70 hover:text-foreground">
+                <a href="https://www.linkedin.com/in/youssef-gamal123" target="_blank" rel="noopener noreferrer" className="p-2.5 bg-white rounded-full border border-foreground/10 hover:border-foreground/30 hover:-translate-y-0.5 transition-all text-foreground/70 hover:text-foreground">
                   <LinkedinIcon className="w-4 h-4" />
                 </a>
                 <a href="https://github.com/YoussefYoussefG" target="_blank" rel="noopener noreferrer" className="p-2.5 bg-white rounded-full border border-foreground/10 hover:border-foreground/30 hover:-translate-y-0.5 transition-all text-foreground/70 hover:text-foreground">
