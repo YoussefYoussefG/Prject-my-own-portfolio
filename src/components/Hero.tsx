@@ -27,7 +27,7 @@ export default function Hero() {
               className="text-6xl md:text-8xl font-serif leading-tight text-foreground"
             >
               Youssef<br />
-              <span className="text-foreground/80">Ghoneim</span>
+              <span className="text-foreground/80">Gamal</span>
             </motion.h1>
           </div>
 

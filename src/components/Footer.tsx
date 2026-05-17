@@ -6,7 +6,7 @@ export default function Footer() {
   return (
     <footer className="py-12 px-6 text-center border-t border-foreground/5">
       <p className="text-xs font-semibold tracking-widest text-foreground/40 uppercase">
-        &copy; {currentYear} Youssef Ghoneim. All rights reserved.
+        &copy; {currentYear} Youssef Gamal. All rights reserved.
       </p>
     </footer>
   );
