@@ -21,6 +21,16 @@ function GithubIcon({ className }: { className?: string }) {
   );
 }
 
+const MAX_NAME_LENGTH = 100;
+const MAX_EMAIL_LENGTH = 254;
+const MAX_MESSAGE_LENGTH = 5000;
+const MIN_NAME_LENGTH = 2;
+const MIN_MESSAGE_LENGTH = 10;
+
+function isValidEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
 export default function Contact() {
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
@@ -28,13 +38,41 @@ export default function Contact() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.id.replace('contact-', '')]: e.target.value });
+    // Clear error state when user starts typing
+    if (status === "error") {
+      setStatus("idle");
+      setErrorMessage("");
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name || !formData.email || !formData.message) {
+
+    const trimmedName = formData.name.trim();
+    const trimmedEmail = formData.email.trim();
+    const trimmedMessage = formData.message.trim();
+
+    if (!trimmedName || !trimmedEmail || !trimmedMessage) {
       setStatus("error");
       setErrorMessage("Please fill out all fields.");
+      return;
+    }
+
+    if (trimmedName.length < MIN_NAME_LENGTH) {
+      setStatus("error");
+      setErrorMessage("Name must be at least 2 characters.");
+      return;
+    }
+
+    if (!isValidEmail(trimmedEmail)) {
+      setStatus("error");
+      setErrorMessage("Please enter a valid email address.");
+      return;
+    }
+
+    if (trimmedMessage.length < MIN_MESSAGE_LENGTH) {
+      setStatus("error");
+      setErrorMessage("Message must be at least 10 characters.");
       return;
     }
 
@@ -124,6 +162,8 @@ export default function Contact() {
                   onChange={handleChange}
                   disabled={status === "submitting"}
                   placeholder="Your name" 
+                  minLength={MIN_NAME_LENGTH}
+                  maxLength={MAX_NAME_LENGTH}
                   className="w-full bg-transparent border-b border-foreground/20 pb-3 text-foreground focus:outline-none focus:border-accent transition-colors placeholder:text-foreground/30 disabled:opacity-50"
                 />
               </div>
@@ -139,6 +179,7 @@ export default function Contact() {
                   onChange={handleChange}
                   disabled={status === "submitting"}
                   placeholder="you@studio.com" 
+                  maxLength={MAX_EMAIL_LENGTH}
                   className="w-full bg-transparent border-b border-foreground/20 pb-3 text-foreground focus:outline-none focus:border-accent transition-colors placeholder:text-foreground/30 disabled:opacity-50"
                 />
               </div>
@@ -154,8 +195,13 @@ export default function Contact() {
                   onChange={handleChange}
                   disabled={status === "submitting"}
                   placeholder="Share a few details about the project..." 
+                  minLength={MIN_MESSAGE_LENGTH}
+                  maxLength={MAX_MESSAGE_LENGTH}
                   className="w-full bg-transparent border-b border-foreground/20 pb-3 text-foreground focus:outline-none focus:border-accent transition-colors placeholder:text-foreground/30 resize-none disabled:opacity-50"
                 ></textarea>
+                <div className="text-right text-xs text-foreground/30 mt-1">
+                  {formData.message.length}/{MAX_MESSAGE_LENGTH}
+                </div>
               </div>
 
               {status === "error" && (
