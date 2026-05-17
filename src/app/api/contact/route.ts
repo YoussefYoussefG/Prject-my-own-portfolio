@@ -14,34 +14,6 @@ const MAX_MESSAGE_LENGTH = 5000;
 const MIN_NAME_LENGTH = 2;
 const MIN_MESSAGE_LENGTH = 10;
 
-// --- Server-Side Rate Limiting ---
-const RATE_LIMIT_WINDOW_MS = 60_000; // 1 minute window
-const RATE_LIMIT_MAX_REQUESTS = 5;   // max 5 requests per window per IP
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
-
-function isRateLimited(ip: string): boolean {
-  const now = Date.now();
-  const entry = rateLimitMap.get(ip);
-
-  if (!entry || now > entry.resetAt) {
-    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
-    return false;
-  }
-
-  entry.count++;
-  return entry.count > RATE_LIMIT_MAX_REQUESTS;
-}
-
-// Periodically clean stale entries to prevent memory leaks
-setInterval(() => {
-  const now = Date.now();
-  for (const [ip, entry] of rateLimitMap) {
-    if (now > entry.resetAt) {
-      rateLimitMap.delete(ip);
-    }
-  }
-}, 5 * 60_000); // every 5 minutes
-
 // --- HTML Escaping (prevents XSS in email templates) ---
 function escapeHtml(str: string): string {
   return str
@@ -58,19 +30,30 @@ function isValidEmail(email: string): boolean {
   return emailRegex.test(email);
 }
 
+// --- Stateless Rate Limiting via Backing Service (Factor VI) ---
+// Queries the messages table for recent submissions from the same email.
+// Works identically across multiple processes/serverless instances (Factor VIII).
+async function isRateLimited(email: string): Promise<boolean> {
+  const maxPerHour = parseInt(process.env.RATE_LIMIT_MAX_PER_HOUR || '5', 10);
+  const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+
+  const { count, error } = await supabase
+    .from('messages')
+    .select('*', { count: 'exact', head: true })
+    .eq('email', email)
+    .gte('created_at', oneHourAgo);
+
+  if (error) {
+    // If we can't check rate limit, allow the request (fail open)
+    console.error('Rate limit check error:', error);
+    return false;
+  }
+
+  return (count ?? 0) >= maxPerHour;
+}
+
 export async function POST(request: NextRequest) {
   try {
-    // --- Rate Limiting ---
-    const forwarded = request.headers.get('x-forwarded-for');
-    const ip = forwarded?.split(',')[0]?.trim() || request.headers.get('x-real-ip') || 'unknown';
-
-    if (isRateLimited(ip)) {
-      return NextResponse.json(
-        { error: 'Too many requests. Please try again later.' },
-        { status: 429 }
-      );
-    }
-
     const body = await request.json();
     const { name, email, message } = body;
 
@@ -128,6 +111,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // --- Rate Limiting (stateless, backed by Supabase) ---
+    if (await isRateLimited(trimmedEmail)) {
+      return NextResponse.json(
+        { error: 'Too many messages sent recently. Please try again later.' },
+        { status: 429 }
+      );
+    }
+
     // --- Save to Supabase ---
     const { error: dbError } = await supabase
       .from('messages')
@@ -148,14 +139,24 @@ export async function POST(request: NextRequest) {
     }
 
     // --- Send Email Notification (with XSS-safe escaping) ---
+    // Factor III: sender/recipient read from environment config
+    const contactTo = process.env.CONTACT_TO_EMAIL;
+    const contactFrom = process.env.CONTACT_FROM_EMAIL;
+
+    if (!contactTo || !contactFrom) {
+      console.error('Missing CONTACT_TO_EMAIL or CONTACT_FROM_EMAIL env vars');
+      // Message saved to DB, so still count as success
+      return NextResponse.json({ success: true });
+    }
+
     const safeName = escapeHtml(trimmedName);
     const safeEmail = escapeHtml(trimmedEmail);
     const safeMessage = escapeHtml(trimmedMessage);
 
     const resend = new Resend(process.env.RESEND_API_KEY);
     const { error: emailError } = await resend.emails.send({
-      from: 'Portfolio Contact <onboarding@resend.dev>',
-      to: 'yg.youssef.gamal16@gmail.com',
+      from: contactFrom,
+      to: contactTo,
       subject: `New Portfolio Message from ${safeName}`,
       html: `
         <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background: #f9f8f6; padding: 40px; border-radius: 16px;">
@@ -202,4 +203,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-

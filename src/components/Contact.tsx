@@ -119,21 +119,27 @@ export default function Contact() {
           
           <FadeInUp delay={0.3}>
             <div className="flex flex-col sm:flex-row gap-4 sm:items-center">
-              <a href="mailto:yg.youssef.gamal16@gmail.com" className="inline-flex items-center gap-2 text-sm font-semibold tracking-wider text-accent hover:opacity-80 transition-opacity">
+              <a href={`mailto:${process.env.NEXT_PUBLIC_CONTACT_EMAIL}`} className="inline-flex items-center gap-2 text-sm font-semibold tracking-wider text-accent hover:opacity-80 transition-opacity">
                 <Mail className="w-4 h-4" />
-                yg.youssef.gamal16@gmail.com
+                {process.env.NEXT_PUBLIC_CONTACT_EMAIL}
               </a>
               
               <div className="flex gap-2 sm:ml-4">
-                <a href="https://www.linkedin.com/in/youssef-gamal123" target="_blank" rel="noopener noreferrer" className="p-2.5 bg-card rounded-full border border-foreground/10 hover:border-foreground/30 hover:-translate-y-0.5 transition-all text-foreground/70 hover:text-foreground">
-                  <LinkedinIcon className="w-4 h-4" />
-                </a>
-                <a href="https://github.com/YoussefYoussefG" target="_blank" rel="noopener noreferrer" className="p-2.5 bg-card rounded-full border border-foreground/10 hover:border-foreground/30 hover:-translate-y-0.5 transition-all text-foreground/70 hover:text-foreground">
-                  <GithubIcon className="w-4 h-4" />
-                </a>
-                <a href="https://buymeacoffee.com/focuswithyoussef" target="_blank" rel="noopener noreferrer" className="p-2.5 bg-card rounded-full border border-foreground/10 hover:border-foreground/30 hover:-translate-y-0.5 transition-all text-foreground/70 hover:text-foreground" title="Buy me a coffee">
-                  <Coffee className="w-4 h-4" />
-                </a>
+                {process.env.NEXT_PUBLIC_LINKEDIN_URL && (
+                  <a href={process.env.NEXT_PUBLIC_LINKEDIN_URL} target="_blank" rel="noopener noreferrer" className="p-2.5 bg-card rounded-full border border-foreground/10 hover:border-foreground/30 hover:-translate-y-0.5 transition-all text-foreground/70 hover:text-foreground">
+                    <LinkedinIcon className="w-4 h-4" />
+                  </a>
+                )}
+                {process.env.NEXT_PUBLIC_GITHUB_URL && (
+                  <a href={process.env.NEXT_PUBLIC_GITHUB_URL} target="_blank" rel="noopener noreferrer" className="p-2.5 bg-card rounded-full border border-foreground/10 hover:border-foreground/30 hover:-translate-y-0.5 transition-all text-foreground/70 hover:text-foreground">
+                    <GithubIcon className="w-4 h-4" />
+                  </a>
+                )}
+                {process.env.NEXT_PUBLIC_BUYMEACOFFEE_URL && (
+                  <a href={process.env.NEXT_PUBLIC_BUYMEACOFFEE_URL} target="_blank" rel="noopener noreferrer" className="p-2.5 bg-card rounded-full border border-foreground/10 hover:border-foreground/30 hover:-translate-y-0.5 transition-all text-foreground/70 hover:text-foreground" title="Buy me a coffee">
+                    <Coffee className="w-4 h-4" />
+                  </a>
+                )}
               </div>
             </div>
           </FadeInUp>
