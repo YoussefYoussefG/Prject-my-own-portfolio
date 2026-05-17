@@ -32,7 +32,7 @@ export default function SplashScreen({ onComplete }: { onComplete: () => void })
           initial={{ opacity: 1 }}
           exit={{ opacity: 0, y: "-100%" }}
           transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
-          className="fixed inset-0 z-[100] bg-[#F9F8F6] flex flex-col items-center justify-center"
+          className="fixed inset-0 z-[100] bg-background flex flex-col items-center justify-center"
         >
           <div className="relative flex flex-col items-center">
             <motion.h1

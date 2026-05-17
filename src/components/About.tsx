@@ -5,7 +5,7 @@ import { FadeInUp } from "./Animations";
 
 export default function About() {
   return (
-    <section id="about" className="py-32 px-6 md:px-12 bg-[#F9F8F6]">
+    <section id="about" className="py-32 px-6 md:px-12 bg-background">
       <div className="max-w-4xl mx-auto flex flex-col items-center">
         
         {/* Indicator */}
@@ -27,7 +27,7 @@ export default function About() {
 
         {/* Text Card */}
         <FadeInUp delay={0.2}>
-          <div className="bg-white rounded-3xl p-8 md:p-16 shadow-sm border border-foreground/5 w-full">
+          <div className="bg-card rounded-3xl p-8 md:p-16 shadow-sm border border-foreground/5 w-full">
             <div className="space-y-8 text-foreground/80 leading-relaxed md:text-lg">
               <p>
                 I am a passionate software engineer and data analyst with a drive for building scalable applications and deriving actionable insights from complex datasets. My journey in technology has been defined by a constant pursuit of learning and a commitment to creating impactful solutions.

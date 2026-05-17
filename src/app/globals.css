@@ -1,9 +1,10 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: #F9F8F6;
+  --color-background: #EDEAE5;
   --color-foreground: #2D2D2D;
   --color-accent: #E05C43;
+  --color-card: #F5F3EF;
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-serif: var(--font-playfair), ui-serif, Georgia, serif;
 }
@@ -14,6 +15,11 @@
     color: var(--color-foreground);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: white;
   }
 }
 

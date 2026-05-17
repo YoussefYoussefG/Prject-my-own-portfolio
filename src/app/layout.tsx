@@ -27,7 +27,7 @@ export default function RootLayout({
       lang="en"
       className={`scroll-smooth ${inter.variable} ${playfair.variable} antialiased`}
     >
-      <body className="min-h-full flex flex-col font-sans bg-[#F9F8F6] text-[#2D2D2D] selection:bg-[#E05C43] selection:text-white">{children}</body>
+      <body className="min-h-full flex flex-col font-sans bg-background text-foreground">{children}</body>
     </html>
   );
 }

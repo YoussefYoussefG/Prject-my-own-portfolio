@@ -86,7 +86,7 @@ export default function Experience() {
         <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-5xl">
           {experiences.map((exp, index) => (
             <StaggerItem key={index}>
-              <div className="bg-white rounded-3xl p-8 md:p-10 shadow-sm border border-foreground/5 hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
+              <div className="bg-card rounded-3xl p-8 md:p-10 shadow-sm border border-foreground/5 hover:shadow-lg hover:-translate-y-1.5 transition-all duration-300 flex flex-col h-full">
                 <div className={`w-14 h-14 rounded-full flex items-center justify-center mb-6 text-xs font-bold tracking-wider ${exp.logoBg}`}>
                   {exp.logoText}
                 </div>

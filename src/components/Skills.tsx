@@ -49,7 +49,7 @@ export default function Skills() {
         <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {skillCategories.map((category, index) => (
             <StaggerItem key={index}>
-              <div className="bg-white rounded-3xl p-8 shadow-sm border border-foreground/5 hover:shadow-md hover:-translate-y-1 transition-all duration-300 h-full">
+              <div className="bg-card rounded-3xl p-8 shadow-sm border border-foreground/5 hover:shadow-lg hover:-translate-y-1.5 transition-all duration-300 h-full">
                 <h3 className="font-serif text-xl mb-6 text-foreground">{category.title}</h3>
                 <ul className="space-y-4">
                   {category.skills.map((skill, idx) => (

@@ -5,6 +5,40 @@ import { ArrowUpRight } from "lucide-react";
 import { FadeInUp, StaggerContainer, StaggerItem } from "./Animations";
 import { getProjectsByCategory, ProjectCategory } from "../lib/services/projectService";
 
+// Static fallback data in case Supabase is unreachable
+const fallbackData: ProjectCategory[] = [
+  {
+    id: "fallback-web",
+    category: "Web Apps",
+    count: 3,
+    projects: [
+      { id: "1", title: "Pediatric Pulse | Healthcare Platform", description: "A full clinic management system with web and mobile applications.", tags: ["WEB APP", "MOBILE"], link_text: "GITHUB REPO", link_url: "#" },
+      { id: "2", title: "Image Processing Application", description: "An interactive web app for mixing visual components and corner detection.", tags: ["WEB APP"], link_text: "GITHUB REPO", link_url: "#" },
+      { id: "3", title: "BM - Backend Service", description: "A modular backend service with secure API endpoints and authentication.", tags: ["WEB APP"], link_text: "GITHUB REPO", link_url: "#" },
+    ],
+  },
+  {
+    id: "fallback-mobile",
+    category: "Mobile Apps",
+    count: 3,
+    projects: [
+      { id: "4", title: "Pediatric Pulse | Healthcare Platform", description: "A full clinic management system with web and mobile applications.", tags: ["WEB APP", "MOBILE"], link_text: "GITHUB REPO", link_url: "#" },
+      { id: "5", title: "QR Authentication System", description: "A secure login system utilizing UUID-based QR code generation.", tags: ["MOBILE"], link_text: "GITHUB REPO", link_url: "#" },
+      { id: "6", title: "EchoPlay", description: "A cross-platform mobile game with a modern Truth or Dare experience.", tags: ["MOBILE"], link_text: "GITHUB REPO", link_url: "#" },
+    ],
+  },
+  {
+    id: "fallback-data",
+    category: "Data Analytics",
+    count: 3,
+    projects: [
+      { id: "7", title: "HR Dashboard", description: "An interactive HR dashboard in Power BI for workforce data analysis.", tags: ["DATA"], link_text: "VIEW ANALYTICS", link_url: "#" },
+      { id: "8", title: "E-Commerce Sales Dashboard", description: "An interactive sales dashboard analyzing key e-commerce metrics.", tags: ["DATA"], link_text: "VIEW ANALYTICS", link_url: "#" },
+      { id: "9", title: "ISP-Dashboard", description: "An ISP Power BI dashboard for customer segmentation and revenue optimization.", tags: ["DATA"], link_text: "VIEW ANALYTICS", link_url: "#" },
+    ],
+  },
+];
+
 export default function Projects() {
   const [projectCategories, setProjectCategories] = useState<ProjectCategory[]>([]);
   const [loading, setLoading] = useState(true);
@@ -12,7 +46,8 @@ export default function Projects() {
   useEffect(() => {
     async function loadProjects() {
       const data = await getProjectsByCategory();
-      setProjectCategories(data);
+      // Use fallback data if fetch returned empty (Supabase down or no data)
+      setProjectCategories(data.length > 0 ? data : fallbackData);
       setLoading(false);
     }
     loadProjects();
@@ -54,7 +89,7 @@ export default function Projects() {
               <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {section.projects.map((project, idx) => (
                   <StaggerItem key={project.id || idx}>
-                    <div className="bg-white rounded-3xl p-8 shadow-sm border border-foreground/5 hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
+                    <div className="bg-card rounded-3xl p-8 shadow-sm border border-foreground/5 hover:shadow-lg hover:-translate-y-1.5 transition-all duration-300 flex flex-col h-full">
                       <div className="flex gap-2 mb-6 flex-wrap">
                         {project.tags.map((tag, i) => (
                           <span key={i} className="text-[10px] font-semibold tracking-widest text-foreground/50 uppercase bg-foreground/5 px-2.5 py-1 rounded-full">
@@ -89,3 +124,4 @@ export default function Projects() {
     </section>
   );
 }
+
