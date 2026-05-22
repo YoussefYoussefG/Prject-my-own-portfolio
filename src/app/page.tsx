@@ -10,6 +10,7 @@ import Experience from "@/components/Experience";
 import Projects from "@/components/Projects";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
+import ScrollToTop from "@/components/ScrollToTop";
 
 export default function Home() {
   const [showSplash, setShowSplash] = useState(true);
@@ -30,6 +31,7 @@ export default function Home() {
           <Projects />
           <Contact />
           <Footer />
+          <ScrollToTop />
         </>
       )}
     </main>
