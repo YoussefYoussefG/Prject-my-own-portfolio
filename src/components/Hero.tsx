@@ -66,7 +66,7 @@ export default function Hero() {
           <div className="relative w-full h-full rounded-2xl overflow-hidden bg-white shadow-xl flex items-center justify-center p-2">
             <div className="w-full h-full relative rounded-xl overflow-hidden bg-[#e5e5e5]">
               <Image 
-                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop" 
+                src="/profile.jpg" 
                 alt="Youssef Portrait"
                 fill
                 sizes="(max-width: 768px) 100vw, 400px"
