@@ -26,8 +26,17 @@ export default function Hero() {
               transition={{ duration: 0.8, delay: 0.4, ease: [0.25, 0.4, 0.25, 1] }}
               className="text-7xl md:text-8xl lg:text-9xl font-serif leading-[0.9] text-foreground flex flex-col mt-2 group cursor-default"
             >
-              <span className="font-normal tracking-tight transition-all duration-500 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-accent group-hover:to-orange-400">Youssef</span>
-              <span className="italic text-foreground/80 font-medium ml-8 md:ml-16 transition-all duration-500 delay-75 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-orange-400 group-hover:to-yellow-500">Gamal</span>
+              {/* First Name Crossfade */}
+              <div className="relative w-max">
+                <span className="font-normal tracking-tight transition-opacity duration-500 group-hover:opacity-0">Youssef</span>
+                <span className="absolute left-0 top-0 font-normal tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-accent to-orange-400 opacity-0 transition-opacity duration-500 group-hover:opacity-100 pointer-events-none">Youssef</span>
+              </div>
+              
+              {/* Last Name Crossfade */}
+              <div className="relative w-max ml-8 md:ml-16">
+                <span className="italic text-foreground/80 font-medium transition-opacity duration-500 delay-75 group-hover:opacity-0">Gamal</span>
+                <span className="absolute left-0 top-0 italic font-medium text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-yellow-500 opacity-0 transition-opacity duration-500 delay-75 group-hover:opacity-100 pointer-events-none">Gamal</span>
+              </div>
             </motion.h1>
           </div>
 
