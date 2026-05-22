@@ -5,11 +5,11 @@ import Link from "next/link";
 import { Menu, X } from "lucide-react";
 
 const navLinks = [
-  { name: "ABOUT", href: "#about" },
-  { name: "SKILLS", href: "#skills" },
-  { name: "EXPERIENCE", href: "#experience" },
-  { name: "WORK", href: "#work" },
-  { name: "CONTACT", href: "#contact" },
+  { name: "ABOUT", href: "#about", desc: "My journey & background" },
+  { name: "SKILLS", href: "#skills", desc: "Technologies I master" },
+  { name: "EXPERIENCE", href: "#experience", desc: "My career history" },
+  { name: "WORK", href: "#work", desc: "Featured projects" },
+  { name: "CONTACT", href: "#contact", desc: "Let's build something" },
 ];
 
 export default function Header() {
@@ -61,13 +61,19 @@ export default function Header() {
         {/* Desktop Navigation */}
         <nav className="hidden md:flex flex-1 justify-end items-center gap-8 text-xs font-semibold tracking-widest text-foreground/70">
           {navLinks.map((link) => (
-            <Link
-              key={link.name}
-              href={link.href}
-              className="hover:text-accent transition-colors duration-200"
-            >
-              {link.name}
-            </Link>
+            <div key={link.name} className="relative group">
+              <Link
+                href={link.href}
+                className="hover:text-accent transition-colors duration-200"
+              >
+                {link.name}
+              </Link>
+              {/* Custom Tooltip */}
+              <div className="absolute top-full mt-4 left-1/2 -translate-x-1/2 px-3 py-2 bg-foreground text-background text-[10px] tracking-normal whitespace-nowrap rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 pointer-events-none shadow-xl">
+                {link.desc}
+                <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-foreground rotate-45"></div>
+              </div>
+            </div>
           ))}
         </nav>
 
