@@ -125,13 +125,13 @@ export default function Contact() {
               </a>
               
               <div className="flex gap-2 sm:ml-4">
-                <a href="https://www.linkedin.com/in/youssef-gamal123" target="_blank" rel="noopener noreferrer" className="p-2.5 bg-card rounded-full border border-foreground/10 hover:border-foreground/30 hover:-translate-y-0.5 transition-all text-foreground/70 hover:text-foreground">
+                <a href="https://www.linkedin.com/in/youssef-gamal123" target="_blank" rel="noopener noreferrer" aria-label="Visit Youssef's LinkedIn profile" className="p-2.5 bg-card rounded-full border border-foreground/10 hover:border-foreground/30 hover:-translate-y-0.5 transition-all text-foreground/70 hover:text-foreground">
                   <LinkedinIcon className="w-4 h-4" />
                 </a>
-                <a href="https://github.com/YoussefYoussefG" target="_blank" rel="noopener noreferrer" className="p-2.5 bg-card rounded-full border border-foreground/10 hover:border-foreground/30 hover:-translate-y-0.5 transition-all text-foreground/70 hover:text-foreground">
+                <a href="https://github.com/YoussefYoussefG" target="_blank" rel="noopener noreferrer" aria-label="Visit Youssef's GitHub profile" className="p-2.5 bg-card rounded-full border border-foreground/10 hover:border-foreground/30 hover:-translate-y-0.5 transition-all text-foreground/70 hover:text-foreground">
                   <GithubIcon className="w-4 h-4" />
                 </a>
-                <a href="https://buymeacoffee.com/focuswithyoussef" target="_blank" rel="noopener noreferrer" className="p-2.5 bg-card rounded-full border border-foreground/10 hover:border-foreground/30 hover:-translate-y-0.5 transition-all text-foreground/70 hover:text-foreground" title="Buy me a coffee">
+                <a href="https://buymeacoffee.com/focuswithyoussef" target="_blank" rel="noopener noreferrer" aria-label="Buy Youssef a coffee" className="p-2.5 bg-card rounded-full border border-foreground/10 hover:border-foreground/30 hover:-translate-y-0.5 transition-all text-foreground/70 hover:text-foreground" title="Buy me a coffee">
                   <Coffee className="w-4 h-4" />
                 </a>
               </div>
