@@ -1,18 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { createClient } from '@supabase/supabase-js';
+import {
+  MAX_NAME_LENGTH,
+  MAX_EMAIL_LENGTH,
+  MAX_MESSAGE_LENGTH,
+  MIN_NAME_LENGTH,
+  MIN_MESSAGE_LENGTH,
+  isValidEmail,
+} from '@/lib/validation';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-// --- Validation Constraints ---
-const MAX_NAME_LENGTH = 100;
-const MAX_EMAIL_LENGTH = 254;
-const MAX_MESSAGE_LENGTH = 5000;
-const MIN_NAME_LENGTH = 2;
-const MIN_MESSAGE_LENGTH = 10;
+// Module-level Resend client (reused across requests)
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // --- HTML Escaping (prevents XSS in email templates) ---
 function escapeHtml(str: string): string {
@@ -22,12 +26,6 @@ function escapeHtml(str: string): string {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
-}
-
-// Simple email validation
-function isValidEmail(email: string): boolean {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
 }
 
 // --- Stateless Rate Limiting via Backing Service (Factor VI) ---
@@ -52,8 +50,20 @@ async function isRateLimited(email: string): Promise<boolean> {
   return (count ?? 0) >= maxPerHour;
 }
 
+// Max request body size (10KB — more than enough for a contact form)
+const MAX_BODY_SIZE = 10_000;
+
 export async function POST(request: NextRequest) {
   try {
+    // --- Request size guard ---
+    const contentLength = parseInt(request.headers.get('content-length') || '0');
+    if (contentLength > MAX_BODY_SIZE) {
+      return NextResponse.json(
+        { error: 'Request too large.' },
+        { status: 413 }
+      );
+    }
+
     const body = await request.json();
     const { name, email, message } = body;
 
@@ -146,7 +156,6 @@ export async function POST(request: NextRequest) {
     const safeEmail = escapeHtml(trimmedEmail);
     const safeMessage = escapeHtml(trimmedMessage);
 
-    const resend = new Resend(process.env.RESEND_API_KEY);
     const { error: emailError } = await resend.emails.send({
       from: contactFrom,
       to: contactTo,
