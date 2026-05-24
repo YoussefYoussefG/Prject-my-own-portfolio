@@ -1,11 +1,31 @@
 "use client";
 
-import React from "react";
-import { ArrowRight, Download } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { ArrowRight, Download, Eye, X } from "lucide-react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 
 export default function Hero() {
+  const [isResumeOpen, setIsResumeOpen] = useState(false);
+
+  useEffect(() => {
+    document.body.style.overflow = isResumeOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isResumeOpen]);
+
+  useEffect(() => {
+    if (!isResumeOpen) return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsResumeOpen(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isResumeOpen]);
+
   return (
     <section className="min-h-screen pt-32 pb-20 px-6 md:px-12 flex flex-col justify-center max-w-7xl mx-auto w-full">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -46,7 +66,7 @@ export default function Hero() {
             transition={{ duration: 0.6, delay: 0.7 }}
             className="flex flex-col sm:flex-row items-start sm:items-center gap-6 pt-4"
           >
-            <div className="flex items-center gap-4">
+            <div className="flex flex-wrap items-center gap-4">
               <a
                 href="#work"
                 className="group flex items-center gap-4 bg-foreground text-background px-8 py-4 rounded-full font-semibold text-xs tracking-widest hover:bg-foreground/90 transition-all duration-300 hover:shadow-lg"
@@ -54,13 +74,23 @@ export default function Hero() {
                 ENTER PORTFOLIO
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </a>
+              <button
+                type="button"
+                onClick={() => setIsResumeOpen(true)}
+                className="group flex items-center gap-3 bg-transparent border border-foreground/20 text-foreground px-6 py-4 rounded-full font-semibold text-xs tracking-widest hover:bg-foreground hover:text-background transition-all duration-300"
+                aria-haspopup="dialog"
+                aria-expanded={isResumeOpen}
+              >
+                <Eye className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                VIEW CV
+              </button>
               <a
                 href="/resume.pdf"
                 download
                 className="group flex items-center gap-3 bg-transparent border border-foreground/20 text-foreground px-6 py-4 rounded-full font-semibold text-xs tracking-widest hover:bg-foreground hover:text-background transition-all duration-300"
               >
                 <Download className="w-4 h-4 group-hover:-translate-y-1 transition-transform" />
-                RESUME
+                DOWNLOAD CV
               </a>
             </div>
             
@@ -96,6 +126,57 @@ export default function Hero() {
           </div>
         </motion.div>
       </div>
+
+      {isResumeOpen && (
+        <div
+          className="fixed inset-0 z-[80] bg-foreground/60 backdrop-blur-sm flex items-center justify-center p-4"
+          onClick={() => setIsResumeOpen(false)}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Resume preview"
+            className="bg-background w-full max-w-5xl h-[80vh] rounded-2xl shadow-xl border border-foreground/10 overflow-hidden flex flex-col"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="flex items-center justify-between px-6 py-4 border-b border-foreground/10">
+              <div>
+                <p className="text-[10px] font-semibold tracking-widest uppercase text-foreground/50">
+                  Resume
+                </p>
+                <h3 className="text-lg font-serif">Youssef Gamal CV</h3>
+              </div>
+              <div className="flex items-center gap-3">
+                <a
+                  href="/resume.pdf"
+                  download
+                  className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest text-foreground/70 hover:text-foreground transition-colors"
+                >
+                  <Download className="w-4 h-4" />
+                  DOWNLOAD
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setIsResumeOpen(false)}
+                  className="p-2 rounded-full hover:bg-foreground/5 text-foreground transition-colors"
+                  aria-label="Close resume preview"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+            <div className="flex-1 bg-foreground/5">
+              <object data="/resume.pdf" type="application/pdf" className="w-full h-full">
+                <div className="h-full w-full flex items-center justify-center p-8 text-sm text-foreground/60">
+                  <p>
+                    Preview not available. Use the download button above to view the CV.
+                  </p>
+                </div>
+              </object>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
