@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Send, Mail, CheckCircle, AlertCircle, Coffee, CreditCard } from "lucide-react";
+import { Send, Mail, CheckCircle, AlertCircle, Coffee } from "lucide-react";
 import { playSuccessChime } from "../lib/sounds";
 import { FadeInUp } from "./Animations";
 import { submitContactMessage } from "../lib/services/contactService";
@@ -133,20 +133,6 @@ export default function Contact() {
                 </a>
                 <a href="https://buymeacoffee.com/focuswithyoussef" target="_blank" rel="noopener noreferrer" aria-label="Buy Youssef a coffee" className="p-2.5 bg-card rounded-full border border-foreground/10 hover:border-foreground/30 hover:-translate-y-0.5 transition-all text-foreground/70 hover:text-foreground" title="Buy me a coffee">
                   <Coffee className="w-4 h-4" />
-                </a>
-
-                <div className="w-[1px] h-5 bg-foreground/15 mx-1 hidden sm:block"></div>
-
-                <a
-                  href="#"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Hire Youssef via Stripe"
-                  title="Hire Me"
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-violet-600 to-indigo-600 text-white text-[10px] font-semibold tracking-widest uppercase rounded-full hover:from-violet-500 hover:to-indigo-500 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-violet-500/25 transition-all duration-300"
-                >
-                  <CreditCard className="w-3.5 h-3.5" />
-                  HIRE ME
                 </a>
               </div>
             </div>
