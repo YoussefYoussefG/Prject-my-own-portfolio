@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Download } from "lucide-react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 
@@ -46,13 +46,23 @@ export default function Hero() {
             transition={{ duration: 0.6, delay: 0.7 }}
             className="flex flex-col sm:flex-row items-start sm:items-center gap-6 pt-4"
           >
-            <a
-              href="#work"
-              className="group flex items-center gap-4 bg-foreground text-background px-8 py-4 rounded-full font-semibold text-xs tracking-widest hover:bg-foreground/90 transition-all duration-300 hover:shadow-lg"
-            >
-              ENTER PORTFOLIO
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </a>
+            <div className="flex items-center gap-4">
+              <a
+                href="#work"
+                className="group flex items-center gap-4 bg-foreground text-background px-8 py-4 rounded-full font-semibold text-xs tracking-widest hover:bg-foreground/90 transition-all duration-300 hover:shadow-lg"
+              >
+                ENTER PORTFOLIO
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </a>
+              <a
+                href="/resume.pdf"
+                download
+                className="group flex items-center gap-3 bg-transparent border border-foreground/20 text-foreground px-6 py-4 rounded-full font-semibold text-xs tracking-widest hover:bg-foreground hover:text-background transition-all duration-300"
+              >
+                <Download className="w-4 h-4 group-hover:-translate-y-1 transition-transform" />
+                RESUME
+              </a>
+            </div>
             
             <div className="flex items-center gap-4 text-xs font-semibold tracking-widest text-foreground/50">
               <div className="w-12 h-[1px] bg-foreground/20"></div>

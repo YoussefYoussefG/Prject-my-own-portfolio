@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
+import { ThemeToggle } from "./ThemeToggle";
 
 const navLinks = [
   { name: "ABOUT", href: "#about", desc: "My journey & background" },
@@ -75,10 +76,14 @@ export default function Header() {
               </div>
             </div>
           ))}
+          <div className="pl-4 border-l border-foreground/10">
+            <ThemeToggle />
+          </div>
         </nav>
 
-        {/* Mobile Menu Toggle */}
-        <div className="md:hidden">
+        {/* Mobile Menu Toggle & Theme */}
+        <div className="md:hidden flex items-center gap-2">
+          <ThemeToggle />
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="p-2 text-foreground"
