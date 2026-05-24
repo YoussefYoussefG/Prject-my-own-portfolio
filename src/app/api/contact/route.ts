@@ -8,6 +8,9 @@ import {
   MIN_NAME_LENGTH,
   MIN_MESSAGE_LENGTH,
   isValidEmail,
+  MAX_ATTACHMENT_SIZE_BYTES,
+  MAX_ATTACHMENT_SIZE_MB,
+  ALLOWED_ATTACHMENT_MIME_TYPES,
 } from '@/lib/validation';
 
 const supabase = createClient(
@@ -50,22 +53,59 @@ async function isRateLimited(email: string): Promise<boolean> {
   return (count ?? 0) >= maxPerHour;
 }
 
-// Max request body size (10KB — more than enough for a contact form)
-const MAX_BODY_SIZE = 10_000;
+// Max request size (file + fields)
+const MAX_REQUEST_BYTES = MAX_ATTACHMENT_SIZE_BYTES + 20_000;
+
+function formatBytes(bytes: number): string {
+  const sizeInMb = bytes / (1024 * 1024);
+  if (sizeInMb >= 1) {
+    return `${sizeInMb.toFixed(1)}MB`;
+  }
+  return `${Math.ceil(bytes / 1024)}KB`;
+}
 
 export async function POST(request: NextRequest) {
   try {
     // --- Request size guard ---
     const contentLength = parseInt(request.headers.get('content-length') || '0');
-    if (contentLength > MAX_BODY_SIZE) {
+    if (contentLength && contentLength > MAX_REQUEST_BYTES) {
       return NextResponse.json(
         { error: 'Request too large.' },
         { status: 413 }
       );
     }
 
-    const body = await request.json();
-    const { name, email, message } = body;
+    const contentType = request.headers.get('content-type') || '';
+    let name: string | undefined;
+    let email: string | undefined;
+    let message: string | undefined;
+    let attachment: File | null = null;
+
+    if (contentType.includes('application/json')) {
+      const body = await request.json();
+      name = body?.name;
+      email = body?.email;
+      message = body?.message;
+    } else {
+      const formData = await request.formData();
+      const nameValue = formData.get('name');
+      const emailValue = formData.get('email');
+      const messageValue = formData.get('message');
+      const attachmentValue = formData.get('attachment');
+
+      if (typeof nameValue === 'string') {
+        name = nameValue;
+      }
+      if (typeof emailValue === 'string') {
+        email = emailValue;
+      }
+      if (typeof messageValue === 'string') {
+        message = messageValue;
+      }
+      if (attachmentValue instanceof File && attachmentValue.size > 0) {
+        attachment = attachmentValue;
+      }
+    }
 
     // --- Validation ---
     if (!name?.trim() || !email?.trim() || !message?.trim()) {
@@ -121,6 +161,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (attachment) {
+      if (attachment.size > MAX_ATTACHMENT_SIZE_BYTES) {
+        return NextResponse.json(
+          { error: `Attachment must be under ${MAX_ATTACHMENT_SIZE_MB}MB.` },
+          { status: 413 }
+        );
+      }
+      if (!ALLOWED_ATTACHMENT_MIME_TYPES.includes(attachment.type)) {
+        return NextResponse.json(
+          { error: 'Unsupported attachment type.' },
+          { status: 400 }
+        );
+      }
+    }
+
     // --- Rate Limiting (stateless, backed by Supabase) ---
     if (await isRateLimited(trimmedEmail)) {
       return NextResponse.json(
@@ -155,6 +210,19 @@ export async function POST(request: NextRequest) {
     const safeName = escapeHtml(trimmedName);
     const safeEmail = escapeHtml(trimmedEmail);
     const safeMessage = escapeHtml(trimmedMessage);
+    const safeAttachmentName = attachment ? escapeHtml(attachment.name || 'attachment') : null;
+
+    let attachments: Array<{ filename: string; content: string; contentType?: string }> | undefined;
+    if (attachment) {
+      const buffer = Buffer.from(await attachment.arrayBuffer());
+      attachments = [
+        {
+          filename: attachment.name || 'attachment',
+          content: buffer,
+          contentType: attachment.type || 'application/octet-stream',
+        },
+      ];
+    }
 
     const { error: emailError } = await resend.emails.send({
       from: contactFrom,
@@ -182,6 +250,12 @@ export async function POST(request: NextRequest) {
               <p style="font-size: 12px; text-transform: uppercase; letter-spacing: 2px; color: #999; margin: 0 0 4px 0;">Message</p>
               <p style="font-size: 15px; color: #2D2D2D; margin: 0; line-height: 1.6; white-space: pre-wrap;">${safeMessage}</p>
             </div>
+            ${attachment ? `
+              <div style="margin-top: 20px;">
+                <p style="font-size: 12px; text-transform: uppercase; letter-spacing: 2px; color: #999; margin: 0 0 4px 0;">Attachment</p>
+                <p style="font-size: 14px; color: #2D2D2D; margin: 0;">${safeAttachmentName} (${formatBytes(attachment.size)})</p>
+              </div>
+            ` : ''}
           </div>
           
           <p style="color: #999; font-size: 12px; margin-top: 24px; text-align: center;">
@@ -189,6 +263,7 @@ export async function POST(request: NextRequest) {
           </p>
         </div>
       `,
+      ...(attachments ? { attachments } : {}),
     });
 
     if (emailError) {

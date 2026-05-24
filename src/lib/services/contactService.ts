@@ -2,6 +2,7 @@ export interface ContactMessage {
   name: string;
   email: string;
   message: string;
+  attachment?: File | null;
 }
 
 // Rate limiting: track last submission time per session
@@ -22,15 +23,18 @@ export async function submitContactMessage(data: ContactMessage): Promise<{ succ
       return { success: false, error: `Please wait ${remainingSeconds} seconds before sending another message.` };
     }
 
+    const formData = new FormData();
+    formData.append('name', data.name.trim());
+    formData.append('email', data.email.trim());
+    formData.append('message', data.message.trim());
+    if (data.attachment) {
+      formData.append('attachment', data.attachment, data.attachment.name);
+    }
+
     // Call the API route (handles DB save + email notification)
     const response = await fetch('/api/contact', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name: data.name.trim(),
-        email: data.email.trim(),
-        message: data.message.trim(),
-      }),
+      body: formData,
     });
 
     const result = await response.json();

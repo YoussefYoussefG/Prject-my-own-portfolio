@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Send, Mail, CheckCircle, AlertCircle, Coffee } from "lucide-react";
 import { playSuccessChime } from "../lib/sounds";
 import { FadeInUp } from "./Animations";
@@ -12,6 +12,9 @@ import {
   MIN_NAME_LENGTH,
   MIN_MESSAGE_LENGTH,
   isValidEmail,
+  MAX_ATTACHMENT_SIZE_BYTES,
+  MAX_ATTACHMENT_SIZE_MB,
+  ALLOWED_ATTACHMENT_MIME_TYPES,
 } from "../lib/validation";
 
 function LinkedinIcon({ className }: { className?: string }) {
@@ -32,8 +35,11 @@ function GithubIcon({ className }: { className?: string }) {
 
 export default function Contact() {
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
+  const [attachment, setAttachment] = useState<File | null>(null);
+  const [attachmentError, setAttachmentError] = useState("");
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.id.replace('contact-', '')]: e.target.value });
@@ -42,6 +48,48 @@ export default function Contact() {
       setStatus("idle");
       setErrorMessage("");
     }
+  };
+
+  const formatBytes = (bytes: number) => {
+    const sizeInMb = bytes / (1024 * 1024);
+    if (sizeInMb >= 1) {
+      return `${sizeInMb.toFixed(1)}MB`;
+    }
+    return `${Math.ceil(bytes / 1024)}KB`;
+  };
+
+  const validateAttachment = (file: File) => {
+    if (file.size > MAX_ATTACHMENT_SIZE_BYTES) {
+      return `File must be under ${MAX_ATTACHMENT_SIZE_MB}MB.`;
+    }
+    if (!ALLOWED_ATTACHMENT_MIME_TYPES.includes(file.type)) {
+      return "Unsupported file type. Please upload a PDF, DOC, DOCX, PNG, or JPG.";
+    }
+    return "";
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+    setAttachmentError("");
+    setAttachment(null);
+
+    if (!file) {
+      return;
+    }
+
+    const validationError = validateAttachment(file);
+    if (validationError) {
+      setAttachmentError(validationError);
+      e.target.value = "";
+      return;
+    }
+
+    if (status === "error") {
+      setStatus("idle");
+      setErrorMessage("");
+    }
+
+    setAttachment(file);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -75,12 +123,32 @@ export default function Contact() {
       return;
     }
 
+    if (attachmentError) {
+      setStatus("error");
+      setErrorMessage(attachmentError);
+      return;
+    }
+
+    if (attachment) {
+      const validationError = validateAttachment(attachment);
+      if (validationError) {
+        setStatus("error");
+        setErrorMessage(validationError);
+        return;
+      }
+    }
+
     setStatus("submitting");
-    const result = await submitContactMessage(formData);
+    const result = await submitContactMessage({ ...formData, attachment });
 
     if (result.success) {
       setStatus("success");
       setFormData({ name: "", email: "", message: "" });
+      setAttachment(null);
+      setAttachmentError("");
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
       playSuccessChime();
       // Reset success message after 5 seconds
       setTimeout(() => setStatus("idle"), 5000);
@@ -202,6 +270,32 @@ export default function Contact() {
                 <div className="text-right text-xs text-foreground/30 mt-1">
                   {formData.message.length}/{MAX_MESSAGE_LENGTH}
                 </div>
+              </div>
+
+              <div className="space-y-2">
+                <label htmlFor="contact-attachment" className="text-xs font-semibold tracking-widest uppercase text-foreground/50 block">
+                  Attachment (optional)
+                </label>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  id="contact-attachment"
+                  onChange={handleFileChange}
+                  disabled={status === "submitting"}
+                  accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+                  className="w-full bg-transparent border-b border-foreground/20 pb-3 text-foreground focus:outline-none focus:border-accent transition-colors placeholder:text-foreground/30 disabled:opacity-50"
+                />
+                <div className="text-xs text-foreground/40">
+                  Max {MAX_ATTACHMENT_SIZE_MB}MB. PDF, DOC, DOCX, PNG, or JPG.
+                </div>
+                {attachment && (
+                  <div className="text-xs text-foreground/60">
+                    Selected: {attachment.name} ({formatBytes(attachment.size)})
+                  </div>
+                )}
+                {attachmentError && (
+                  <div className="text-xs text-red-500">{attachmentError}</div>
+                )}
               </div>
 
               {status === "error" && (
