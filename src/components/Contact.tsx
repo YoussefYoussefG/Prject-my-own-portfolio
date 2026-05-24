@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useRef } from "react";
-import { Send, Mail, CheckCircle, AlertCircle, Coffee } from "lucide-react";
+import React, { useState, useRef, DragEvent } from "react";
+import { Send, Mail, CheckCircle, AlertCircle, Coffee, Paperclip, X } from "lucide-react";
 import { playSuccessChime } from "../lib/sounds";
 import { FadeInUp } from "./Animations";
 import { submitContactMessage } from "../lib/services/contactService";
@@ -37,6 +37,7 @@ export default function Contact() {
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
   const [attachment, setAttachment] = useState<File | null>(null);
   const [attachmentError, setAttachmentError] = useState("");
+  const [isDragging, setIsDragging] = useState(false);
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -90,6 +91,50 @@ export default function Contact() {
     }
 
     setAttachment(file);
+  };
+
+  const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(false);
+    
+    if (status === "submitting") return;
+
+    const file = e.dataTransfer.files?.[0] || null;
+    
+    setAttachmentError("");
+    setAttachment(null);
+    if (!file) return;
+
+    const validationError = validateAttachment(file);
+    if (validationError) {
+      setAttachmentError(validationError);
+      return;
+    }
+
+    if (status === "error") {
+      setStatus("idle");
+      setErrorMessage("");
+    }
+
+    setAttachment(file);
+  };
+
+  const removeAttachment = () => {
+    setAttachment(null);
+    setAttachmentError("");
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -273,28 +318,75 @@ export default function Contact() {
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="contact-attachment" className="text-xs font-semibold tracking-widest uppercase text-foreground/50 block">
+                <label className="text-xs font-semibold tracking-widest uppercase text-foreground/50 block">
                   Attachment (optional)
                 </label>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  id="contact-attachment"
-                  onChange={handleFileChange}
-                  disabled={status === "submitting"}
-                  accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
-                  className="w-full bg-transparent border-b border-foreground/20 pb-3 text-foreground focus:outline-none focus:border-accent transition-colors placeholder:text-foreground/30 disabled:opacity-50"
-                />
-                <div className="text-xs text-foreground/40">
-                  Max {MAX_ATTACHMENT_SIZE_MB}MB. PDF, DOC, DOCX, PNG, or JPG.
+                
+                <div 
+                  className={`relative border-2 border-dashed rounded-xl transition-all duration-200 ${
+                    isDragging ? "border-accent bg-accent/5" : "border-foreground/10 hover:border-foreground/30 bg-transparent"
+                  } ${attachment ? "p-4 cursor-default" : "p-8 text-center cursor-pointer"} ${status === "submitting" ? "opacity-50 pointer-events-none" : ""}`}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                  onClick={() => !attachment && fileInputRef.current?.click()}
+                >
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    id="contact-attachment"
+                    onChange={handleFileChange}
+                    disabled={status === "submitting"}
+                    accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+                    className="hidden"
+                  />
+                  
+                  {!attachment ? (
+                    <div className="flex flex-col items-center justify-center space-y-3 pointer-events-none">
+                      <div className="w-10 h-10 rounded-full bg-foreground/5 flex items-center justify-center">
+                        <Paperclip className="w-5 h-5 text-foreground/50" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-foreground">
+                          <span className="text-accent font-semibold underline underline-offset-4 decoration-accent/50 pr-1">Browse files</span>
+                          or drag and drop
+                        </p>
+                        <p className="text-xs text-foreground/40 mt-1">
+                          Max {MAX_ATTACHMENT_SIZE_MB}MB. PDF, DOC, DOCX, PNG, or JPG.
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-between bg-card z-10 relative">
+                      <div className="flex items-center space-x-3 overflow-hidden">
+                        <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
+                          <Paperclip className="w-4 h-4 text-accent" />
+                        </div>
+                        <div className="overflow-hidden">
+                          <p className="text-sm font-medium text-foreground truncate">{attachment.name}</p>
+                          <p className="text-xs text-foreground/50">{formatBytes(attachment.size)}</p>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          removeAttachment();
+                        }}
+                        className="p-2 hover:bg-foreground/5 rounded-full transition-colors"
+                        aria-label="Remove attachment"
+                      >
+                        <X className="w-4 h-4 text-foreground/50" />
+                      </button>
+                    </div>
+                  )}
                 </div>
-                {attachment && (
-                  <div className="text-xs text-foreground/60">
-                    Selected: {attachment.name} ({formatBytes(attachment.size)})
-                  </div>
-                )}
+                
                 {attachmentError && (
-                  <div className="text-xs text-red-500">{attachmentError}</div>
+                  <div className="text-xs text-red-500 flex items-center gap-1 mt-2">
+                    <AlertCircle className="w-3 h-3" />
+                    {attachmentError}
+                  </div>
                 )}
               </div>
 
