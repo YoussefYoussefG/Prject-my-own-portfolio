@@ -212,13 +212,13 @@ export async function POST(request: NextRequest) {
     const safeMessage = escapeHtml(trimmedMessage);
     const safeAttachmentName = attachment ? escapeHtml(attachment.name || 'attachment') : null;
 
-    let attachments: Array<{ filename: string; content: string; contentType?: string }> | undefined;
+    let attachments: Array<{ filename: string; content: string | Buffer; contentType?: string }> | undefined;
     if (attachment) {
       const buffer = Buffer.from(await attachment.arrayBuffer());
       attachments = [
         {
           filename: attachment.name || 'attachment',
-          content: buffer as unknown as Buffer, // Bypass strict type check for Node Buffer vs Resend string requirement
+          content: buffer,
           contentType: attachment.type || 'application/octet-stream',
         },
       ];
