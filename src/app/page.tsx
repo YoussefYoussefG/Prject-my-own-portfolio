@@ -11,6 +11,7 @@ import Projects from "@/components/Projects";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
+import CustomCursor from "@/components/CustomCursor";
 
 export default function Home() {
   const [showSplash, setShowSplash] = useState(true);
@@ -23,6 +24,7 @@ export default function Home() {
       
       {!showSplash && (
         <>
+          <CustomCursor />
           <Header />
           <Hero />
           <About />

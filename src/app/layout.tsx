@@ -15,8 +15,23 @@ const playfair = Playfair_Display({
 import { ThemeProvider } from "@/components/ThemeProvider";
 
 export const metadata: Metadata = {
-  title: "Youssef - Portfolio",
+  title: "Youssef | Software Developer & Data Analyst",
   description: "A modern, professional portfolio bridging software development, data analytics & business development.",
+  keywords: ["Youssef", "Portfolio", "Software Developer", "Data Analyst", "Business Development", "Web Development", "React", "Next.js"],
+  authors: [{ name: "Youssef" }],
+  creator: "Youssef",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    title: "Youssef | Software Developer & Data Analyst",
+    description: "A modern, professional portfolio bridging software development, data analytics & business development.",
+    siteName: "Youssef Portfolio",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Youssef | Software Developer & Data Analyst",
+    description: "A modern, professional portfolio bridging software development, data analytics & business development.",
+  },
 };
 
 export default function RootLayout({

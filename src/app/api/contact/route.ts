@@ -218,7 +218,7 @@ export async function POST(request: NextRequest) {
       attachments = [
         {
           filename: attachment.name || 'attachment',
-          content: buffer as any, // Bypass strict type check for Node Buffer vs Resend string requirement
+          content: buffer as unknown as Buffer, // Bypass strict type check for Node Buffer vs Resend string requirement
           contentType: attachment.type || 'application/octet-stream',
         },
       ];

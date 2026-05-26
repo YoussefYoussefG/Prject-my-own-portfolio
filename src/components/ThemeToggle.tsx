@@ -9,7 +9,9 @@ export function ThemeToggle() {
   const [mounted, setMounted] = React.useState(false);
 
   // Avoid hydration mismatch
-  React.useEffect(() => setMounted(true), []);
+  React.useEffect(() => {
+    setTimeout(() => setMounted(true), 0);
+  }, []);
 
   if (!mounted) {
     return <div className="w-9 h-9" />;
