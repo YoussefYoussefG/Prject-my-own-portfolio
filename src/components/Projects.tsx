@@ -20,9 +20,8 @@ const fallbackData: ProjectCategory[] = [
   {
     id: "fallback-mobile",
     category: "Mobile Apps",
-    count: 3,
+    count: 2,
     projects: [
-      { id: "4", title: "SafeOR: Operating Room QMS", description: "An interactive Quality Management System designed to digitize and monitor safety standards within operating rooms.", tags: ["WEB APP", "REACT", "DJANGO"], link_text: "GITHUB REPO", link_url: "https://github.com/YoussefYoussefG/OR-Safety-Management-System-Operating-Room-QMS" },
       { id: "5", title: "QR Authentication System", description: "A secure login system utilizing UUID-based QR code generation.", tags: ["MOBILE"], link_text: "GITHUB REPO", link_url: "#" },
       { id: "6", title: "Dare or Drop", description: "A cross-platform, high-performance memory game built with React Native and Expo featuring haptic feedback and premium neon aesthetics.", tags: ["MOBILE", "REACT NATIVE", "EXPO"], link_text: "GITHUB REPO", link_url: "https://github.com/YoussefYoussefG/DareOrDrop" },
     ],
@@ -65,6 +64,11 @@ export default function Projects() {
             link_url: "https://github.com/YoussefYoussefG/Medical-Image-Studio"
           };
           updatedProjects.splice(imageIdx, 1);
+        }
+
+        // Remove SafeOR from non-Web Apps categories
+        if (category.category !== "Web Apps") {
+          updatedProjects = updatedProjects.filter(p => !p.title.includes("SafeOR") && !p.title.includes("Pediatric Pulse"));
         }
 
         // Update BM Backend and Pediatric Pulse project details if they exist
