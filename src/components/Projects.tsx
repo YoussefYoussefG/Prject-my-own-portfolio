@@ -46,8 +46,34 @@ export default function Projects() {
   useEffect(() => {
     async function loadProjects() {
       const data = await getProjectsByCategory();
-      // Use fallback data if fetch returned empty (Supabase down or no data)
-      setProjectCategories(data.length > 0 ? data : fallbackData);
+      let displayData = data.length > 0 ? data : fallbackData;
+
+      // Unconditionally inject the Portfolio project into Web Apps category so it always shows
+      displayData = displayData.map(category => {
+        if (category.category === "Web Apps") {
+          const hasPortfolio = category.projects.some(p => p.title === "Developer Portfolio");
+          if (!hasPortfolio) {
+            return {
+              ...category,
+              count: category.count + 1,
+              projects: [
+                {
+                  id: "portfolio-self",
+                  title: "Developer Portfolio",
+                  description: "A modern, professional portfolio built with Next.js, Tailwind v4, Framer Motion, and automated CI/CD testing.",
+                  tags: ["WEB APP", "NEXT.JS"],
+                  link_text: "GITHUB REPO",
+                  link_url: "https://github.com/YoussefYoussefG/Prject-my-own-portfolio"
+                },
+                ...category.projects,
+              ]
+            };
+          }
+        }
+        return category;
+      });
+
+      setProjectCategories(displayData);
       setLoading(false);
     }
     loadProjects();
