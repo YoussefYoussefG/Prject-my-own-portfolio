@@ -1,5 +1,7 @@
 # Youssef Gamal - Portfolio
 
+🌍 **Live Demo:** [https://youssef-gamal-cv.vercel.app/](https://youssef-gamal-cv.vercel.app/)
+
 A modern, professional portfolio bridging software development, data analytics, and business development. Built with Next.js, Tailwind CSS v4, and Framer Motion.
 
 ## Tech Stack
