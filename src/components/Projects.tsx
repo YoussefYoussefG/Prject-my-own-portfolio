@@ -24,7 +24,7 @@ const fallbackData: ProjectCategory[] = [
     projects: [
       { id: "4", title: "SafeOR: Operating Room QMS", description: "An interactive Quality Management System designed to digitize and monitor safety standards within operating rooms.", tags: ["WEB APP", "REACT", "DJANGO"], link_text: "GITHUB REPO", link_url: "https://github.com/YoussefYoussefG/OR-Safety-Management-System-Operating-Room-QMS" },
       { id: "5", title: "QR Authentication System", description: "A secure login system utilizing UUID-based QR code generation.", tags: ["MOBILE"], link_text: "GITHUB REPO", link_url: "#" },
-      { id: "6", title: "EchoPlay", description: "A cross-platform mobile game with a modern Truth or Dare experience.", tags: ["MOBILE"], link_text: "GITHUB REPO", link_url: "#" },
+      { id: "6", title: "Dare or Drop", description: "A cross-platform, high-performance memory game built with React Native and Expo featuring haptic feedback and premium neon aesthetics.", tags: ["MOBILE", "REACT NATIVE", "EXPO"], link_text: "GITHUB REPO", link_url: "https://github.com/YoussefYoussefG/DareOrDrop" },
     ],
   },
   {
@@ -87,6 +87,16 @@ export default function Projects() {
               link_url: "https://github.com/YoussefYoussefG/OR-Safety-Management-System-Operating-Room-QMS"
             };
           }
+          if (p.title.includes("EchoPlay") || p.title.includes("Dare or Drop")) {
+            return {
+              ...p,
+              title: "Dare or Drop",
+              description: "A cross-platform, high-performance memory game built with React Native and Expo featuring haptic feedback and premium neon aesthetics.",
+              tags: ["MOBILE", "REACT NATIVE", "EXPO"],
+              link_text: "GITHUB REPO",
+              link_url: "https://github.com/YoussefYoussefG/DareOrDrop"
+            };
+          }
           return p;
         });
 
@@ -112,6 +122,23 @@ export default function Projects() {
           };
         }
         
+        if (category.category === "Mobile Apps") {
+          const hasDareOrDrop = updatedProjects.some(p => p.title.includes("Dare or Drop") || p.title.includes("EchoPlay"));
+          if (!hasDareOrDrop) {
+            updatedProjects = [
+              {
+                id: "dare-or-drop",
+                title: "Dare or Drop",
+                description: "A cross-platform, high-performance memory game built with React Native and Expo featuring haptic feedback and premium neon aesthetics.",
+                tags: ["MOBILE", "REACT NATIVE", "EXPO"],
+                link_text: "GITHUB REPO",
+                link_url: "https://github.com/YoussefYoussefG/DareOrDrop"
+              },
+              ...updatedProjects,
+            ];
+          }
+        }
+
         return {
           ...category,
           count: updatedProjects.length,
