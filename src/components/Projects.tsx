@@ -48,29 +48,50 @@ export default function Projects() {
       const data = await getProjectsByCategory();
       let displayData = data.length > 0 ? data : fallbackData;
 
-      // Unconditionally inject the Portfolio project into Web Apps category so it always shows
+      // Unconditionally inject the Portfolio project and update BM Backend Service
       displayData = displayData.map(category => {
-        if (category.category === "Web Apps") {
-          const hasPortfolio = category.projects.some(p => p.title === "Developer Portfolio");
-          if (!hasPortfolio) {
+        let updatedProjects = [...category.projects];
+        
+        // Update BM Backend project details if it exists
+        updatedProjects = updatedProjects.map(p => {
+          if (p.title === "BM - Backend Service" || p.title.includes("BM")) {
             return {
-              ...category,
-              count: category.count + 1,
-              projects: [
-                {
-                  id: "portfolio-self",
-                  title: "Developer Portfolio",
-                  description: "A modern, professional portfolio built with Next.js, Tailwind v4, Framer Motion, and automated CI/CD testing.",
-                  tags: ["WEB APP", "NEXT.JS"],
-                  link_text: "GITHUB REPO",
-                  link_url: "https://github.com/YoussefYoussefG/Prject-my-own-portfolio"
-                },
-                ...category.projects,
-              ]
+              ...p,
+              title: "BM - Business Management API",
+              description: "A secure, Next-Level Node.js backend using Clean Architecture, Prisma ORM, and enterprise Zod validation.",
+              tags: ["NODE.JS", "TYPESCRIPT", "PRISMA"],
+              link_url: "https://github.com/YoussefYoussefG/next-level-bm"
             };
           }
+          return p;
+        });
+
+        if (category.category === "Web Apps") {
+          const hasPortfolio = updatedProjects.some(p => p.title === "Developer Portfolio");
+          if (!hasPortfolio) {
+            updatedProjects = [
+              {
+                id: "portfolio-self",
+                title: "Developer Portfolio",
+                description: "A modern, professional portfolio built with Next.js, Tailwind v4, Framer Motion, and automated CI/CD testing.",
+                tags: ["WEB APP", "NEXT.JS"],
+                link_text: "GITHUB REPO",
+                link_url: "https://github.com/YoussefYoussefG/Prject-my-own-portfolio"
+              },
+              ...updatedProjects,
+            ];
+          }
+          return {
+            ...category,
+            count: updatedProjects.length,
+            projects: updatedProjects
+          };
         }
-        return category;
+        
+        return {
+          ...category,
+          projects: updatedProjects
+        };
       });
 
       setProjectCategories(displayData);
