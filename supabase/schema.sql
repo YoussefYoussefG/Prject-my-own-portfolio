@@ -54,13 +54,13 @@ BEGIN
 
     -- Insert Web Apps Projects
     INSERT INTO public.projects (category_id, title, description, tags, link_text, link_url, sort_order) VALUES
-        (web_id, 'Pediatric Pulse | Healthcare Platform', 'A full clinic management system with web and mobile applications that streamlines appointments, patient records, and communication between patients, doctors, and staff, improving operational efficiency and healthcare service delivery.', ARRAY['WEB APP', 'MOBILE'], 'GITHUB REPO', '#', 1),
+        (web_id, 'SafeOR: Operating Room QMS', 'An interactive Quality Management System designed to digitize and monitor safety standards within operating rooms, featuring secure authentication, live dashboards, and incident reporting.', ARRAY['WEB APP', 'REACT', 'DJANGO'], 'GITHUB REPO', 'https://github.com/YoussefYoussefG/OR-Safety-Management-System-Operating-Room-QMS', 1),
         (web_id, 'Image Processing Application', 'An interactive web app that allows users to mix visual components from images and perform corner detection, enabling creative experimentation and intuitive understanding of image processing concepts.', ARRAY['WEB APP'], 'GITHUB REPO', '#', 2),
         (web_id, 'BM - Backend Service', 'A modular backend service that provides secure API endpoints with authentication support, designed for scalability and deployed using a serverless architecture.', ARRAY['WEB APP'], 'GITHUB REPO', '#', 3);
 
     -- Insert Mobile Apps Projects
     INSERT INTO public.projects (category_id, title, description, tags, link_text, link_url, sort_order) VALUES
-        (mobile_id, 'Pediatric Pulse | Healthcare Platform', 'A full clinic management system with web and mobile applications that streamlines appointments, patient records, and communication between patients, doctors, and staff, improving operational efficiency and healthcare service delivery.', ARRAY['WEB APP', 'MOBILE'], 'GITHUB REPO', '#', 1),
+        (mobile_id, 'SafeOR: Operating Room QMS', 'An interactive Quality Management System designed to digitize and monitor safety standards within operating rooms, featuring secure authentication, live dashboards, and incident reporting.', ARRAY['WEB APP', 'REACT', 'DJANGO'], 'GITHUB REPO', 'https://github.com/YoussefYoussefG/OR-Safety-Management-System-Operating-Room-QMS', 1),
         (mobile_id, 'QR Authentication System', 'Architected a secure login system utilizing UUID-based QR code generation for touchless authentication. Implemented real-time token validation to prevent session hijacking and unauthorized access.', ARRAY['MOBILE'], 'GITHUB REPO', '#', 2),
         (mobile_id, 'EchoPlay', 'A cross-platform mobile game that delivers a modern Truth or Dare experience with a clean interface, smooth performance, and engaging gameplay for social gatherings.', ARRAY['MOBILE'], 'GITHUB REPO', '#', 3);
 

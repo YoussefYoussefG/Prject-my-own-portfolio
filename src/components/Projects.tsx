@@ -12,7 +12,7 @@ const fallbackData: ProjectCategory[] = [
     category: "Web Apps",
     count: 3,
     projects: [
-      { id: "1", title: "Pediatric Pulse | Healthcare Platform", description: "A full clinic management system with web and mobile applications.", tags: ["WEB APP", "MOBILE"], link_text: "GITHUB REPO", link_url: "#" },
+      { id: "1", title: "SafeOR: Operating Room QMS", description: "An interactive Quality Management System designed to digitize and monitor safety standards within operating rooms.", tags: ["WEB APP", "REACT", "DJANGO"], link_text: "GITHUB REPO", link_url: "https://github.com/YoussefYoussefG/OR-Safety-Management-System-Operating-Room-QMS" },
       { id: "2", title: "Image Processing Application", description: "An interactive web app for mixing visual components and corner detection.", tags: ["WEB APP"], link_text: "GITHUB REPO", link_url: "#" },
       { id: "3", title: "BM - Backend Service", description: "A modular backend service with secure API endpoints and authentication.", tags: ["WEB APP"], link_text: "GITHUB REPO", link_url: "#" },
     ],
@@ -22,7 +22,7 @@ const fallbackData: ProjectCategory[] = [
     category: "Mobile Apps",
     count: 3,
     projects: [
-      { id: "4", title: "Pediatric Pulse | Healthcare Platform", description: "A full clinic management system with web and mobile applications.", tags: ["WEB APP", "MOBILE"], link_text: "GITHUB REPO", link_url: "#" },
+      { id: "4", title: "SafeOR: Operating Room QMS", description: "An interactive Quality Management System designed to digitize and monitor safety standards within operating rooms.", tags: ["WEB APP", "REACT", "DJANGO"], link_text: "GITHUB REPO", link_url: "https://github.com/YoussefYoussefG/OR-Safety-Management-System-Operating-Room-QMS" },
       { id: "5", title: "QR Authentication System", description: "A secure login system utilizing UUID-based QR code generation.", tags: ["MOBILE"], link_text: "GITHUB REPO", link_url: "#" },
       { id: "6", title: "EchoPlay", description: "A cross-platform mobile game with a modern Truth or Dare experience.", tags: ["MOBILE"], link_text: "GITHUB REPO", link_url: "#" },
     ],
@@ -67,7 +67,7 @@ export default function Projects() {
           updatedProjects.splice(imageIdx, 1);
         }
 
-        // Update BM Backend project details if it exists
+        // Update BM Backend and Pediatric Pulse project details if they exist
         updatedProjects = updatedProjects.map(p => {
           if (p.title === "BM - Backend Service" || p.title.includes("BM")) {
             return {
@@ -76,6 +76,15 @@ export default function Projects() {
               description: "A secure, Next-Level Node.js backend using Clean Architecture, Prisma ORM, and enterprise Zod validation.",
               tags: ["NODE.JS", "TYPESCRIPT", "PRISMA"],
               link_url: "https://github.com/YoussefYoussefG/next-level-bm"
+            };
+          }
+          if (p.title.includes("Pediatric Pulse") || p.title.includes("SafeOR")) {
+            return {
+              ...p,
+              title: "SafeOR: Operating Room QMS",
+              description: "An interactive Quality Management System designed to digitize and monitor safety standards within operating rooms, featuring secure authentication, live dashboards, and incident reporting.",
+              tags: ["WEB APP", "REACT", "DJANGO"],
+              link_url: "https://github.com/YoussefYoussefG/OR-Safety-Management-System-Operating-Room-QMS"
             };
           }
           return p;
