@@ -49,7 +49,7 @@ export default function Projects() {
       let displayData = data.length > 0 ? data : fallbackData;
 
       // Unconditionally inject the Portfolio project and organize categories correctly
-      let desktopProject: Project | null = null;
+      let desktopProject: any = null;
 
       displayData = displayData.map(category => {
         let updatedProjects = [...category.projects];
@@ -96,6 +96,11 @@ export default function Projects() {
               ...updatedProjects,
             ];
           }
+          return {
+            ...category,
+            count: updatedProjects.length,
+            projects: updatedProjects
+          };
         }
         
         return {
@@ -153,7 +158,7 @@ export default function Projects() {
                   </h3>
                   <span className="text-xs font-semibold tracking-widest text-foreground/40">
                     {section.count} TOTAL
-                  </span>
+                  </span>                     
                 </div>
               </FadeInUp>
 
