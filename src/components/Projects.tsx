@@ -48,11 +48,11 @@ export default function Projects() {
       const data = await getProjectsByCategory();
       let displayData = data.length > 0 ? data : fallbackData;
 
-      // Unconditionally inject the Portfolio project and update BM Backend Service
+      // Unconditionally inject the Portfolio project and update BM Backend Service & Image Processing
       displayData = displayData.map(category => {
         let updatedProjects = [...category.projects];
         
-        // Update BM Backend project details if it exists
+        // Update specific projects if they exist
         updatedProjects = updatedProjects.map(p => {
           if (p.title === "BM - Backend Service" || p.title.includes("BM")) {
             return {
@@ -61,6 +61,15 @@ export default function Projects() {
               description: "A secure, Next-Level Node.js backend using Clean Architecture, Prisma ORM, and enterprise Zod validation.",
               tags: ["NODE.JS", "TYPESCRIPT", "PRISMA"],
               link_url: "https://github.com/YoussefYoussefG/next-level-bm"
+            };
+          }
+          if (p.title === "Image Processing Application" || p.title.includes("Image Processing")) {
+            return {
+              ...p,
+              title: "Medical Image Processing Platform",
+              description: "A comprehensive computer vision desktop application featuring a custom GUI for analyzing medical DICOM datasets and standard images.",
+              tags: ["PYTHON", "OPENCV", "DESKTOP"],
+              link_url: "https://github.com/YoussefYoussefG/Image-Processing-Platform" // Placeholder, update if different
             };
           }
           return p;
