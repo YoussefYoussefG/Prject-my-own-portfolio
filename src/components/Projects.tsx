@@ -48,11 +48,26 @@ export default function Projects() {
       const data = await getProjectsByCategory();
       let displayData = data.length > 0 ? data : fallbackData;
 
-      // Unconditionally inject the Portfolio project and update BM Backend Service & Image Processing
+      // Unconditionally inject the Portfolio project and organize categories correctly
+      let desktopProject: Project | null = null;
+
       displayData = displayData.map(category => {
         let updatedProjects = [...category.projects];
         
-        // Update specific projects if they exist
+        // Find and remove Image Processing from its current category so we can move it
+        const imageIdx = updatedProjects.findIndex(p => p.title === "Image Processing Application" || p.title.includes("Image Processing"));
+        if (imageIdx > -1) {
+          desktopProject = {
+            ...updatedProjects[imageIdx],
+            title: "Medical Image Processing Platform",
+            description: "A comprehensive computer vision desktop application featuring a custom GUI for analyzing medical DICOM datasets and standard images.",
+            tags: ["PYTHON", "OPENCV", "DESKTOP"],
+            link_url: "https://github.com/YoussefYoussefG/Medical-Image-Studio"
+          };
+          updatedProjects.splice(imageIdx, 1);
+        }
+
+        // Update BM Backend project details if it exists
         updatedProjects = updatedProjects.map(p => {
           if (p.title === "BM - Backend Service" || p.title.includes("BM")) {
             return {
@@ -61,15 +76,6 @@ export default function Projects() {
               description: "A secure, Next-Level Node.js backend using Clean Architecture, Prisma ORM, and enterprise Zod validation.",
               tags: ["NODE.JS", "TYPESCRIPT", "PRISMA"],
               link_url: "https://github.com/YoussefYoussefG/next-level-bm"
-            };
-          }
-          if (p.title === "Image Processing Application" || p.title.includes("Image Processing")) {
-            return {
-              ...p,
-              title: "Medical Image Processing Platform",
-              description: "A comprehensive computer vision desktop application featuring a custom GUI for analyzing medical DICOM datasets and standard images.",
-              tags: ["PYTHON", "OPENCV", "DESKTOP"],
-              link_url: "https://github.com/YoussefYoussefG/Image-Processing-Platform" // Placeholder, update if different
             };
           }
           return p;
@@ -90,18 +96,27 @@ export default function Projects() {
               ...updatedProjects,
             ];
           }
-          return {
-            ...category,
-            count: updatedProjects.length,
-            projects: updatedProjects
-          };
         }
         
         return {
           ...category,
+          count: updatedProjects.length,
           projects: updatedProjects
         };
       });
+
+      // If we found the desktop project, create a new category for it
+      if (desktopProject) {
+        displayData.push({
+          id: "desktop-apps",
+          category: "Desktop Applications",
+          count: 1,
+          projects: [desktopProject]
+        });
+      }
+
+      // Filter out any categories that might have become empty
+      displayData = displayData.filter(c => c.count > 0);
 
       setProjectCategories(displayData);
       setLoading(false);
