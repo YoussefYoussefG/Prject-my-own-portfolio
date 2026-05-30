@@ -36,7 +36,7 @@ export default function About() {
                 By combining a strong foundation in frontend and backend development with advanced data analytics capabilities, I approach problems holistically. Whether it&apos;s architecting a robust API, designing an intuitive user interface, or visualizing key business metrics.
               </p>
               <p>
-                Beyond the code, I am deeply interested in business development and how technology can be leveraged to drive growth and efficiency.
+                I am a biomedical engineer passionate about applying technology to healthcare. I focus on translating clinical needs into technical solutions that improve patient outcomes and streamline medical workflows.
               </p>
             </div>
           </div>
